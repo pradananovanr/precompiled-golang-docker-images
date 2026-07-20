@@ -1,0 +1,12 @@
+FROM alpine:3.21
+
+# 1. Install base runtime certificates, compatibility layer, dan tzdata
+RUN apk add --no-cache \
+    ca-certificates \
+    libc6-compat \
+    tzdata
+
+# 2. Konfigurasi Timezone Asia/Jakarta secara permanen di level OS container
+ENV TZ=Asia/Jakarta
+RUN cp /usr/share/zoneinfo/Asia/Jakarta /etc/localtime && \
+    echo "Asia/Jakarta" > /etc/timezone

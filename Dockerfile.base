@@ -1,0 +1,27 @@
+FROM golang:1.26-alpine3.23
+
+# 1. Install native compilation tools, debugging tools, dan tzdata
+RUN apk add --no-cache \
+    gcc \
+    libc-dev \
+    musl-dev \
+    make \
+    git \
+    curl \
+    tcptraceroute \
+    busybox-extras \
+    tzdata
+
+# 2. Konfigurasi Timezone Asia/Jakarta di container build
+ENV TZ=Asia/Jakarta
+RUN cp /usr/share/zoneinfo/Asia/Jakarta /etc/localtime && \
+    echo "Asia/Jakarta" > /etc/timezone
+
+# 3. Install swag CLI v1.16.4 (versi yang kompatibel)
+RUN go install github.com/swaggo/swag/cmd/swag@v1.16.4 && \
+    mv /go/bin/swag /usr/local/bin/
+
+# 4. Set Go build environment defaults
+ENV CGO_ENABLED=1 \
+    GOOS=linux \
+    GOARCH=amd64
